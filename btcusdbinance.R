@@ -23,7 +23,7 @@ write.csv(btcusddata, file="btcusddata.csv")
 # TO DO:
 #[0]- get crypto data
 #[1]- save dataframe to drive
-# 1.5 - commit to github  
+#[1.5]- commit to github  
 # 2 - auto feed the lake with constant data
 # 3 - data wrangling of the lake
 # 4 - apply candlestick analysis
