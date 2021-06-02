@@ -18,6 +18,6 @@ Caso os termos acima não façam sentido para você, é extremamente aconselháv
 
 # Ativos e fontes de dados atualmente suportados:
 
-1. [BTC x USD, Binance](./btcusdbinance.Rmd) (em construção)
+1. [BTC x USD, Binance](./btcusdbinance.Rmd) (em construção). Link alternativo: [./btcusdbinance.md](./btcusdbinance.md)
 
 

@@ -5,6 +5,8 @@ date: "01/06/2021"
 output: html_document
 ---
 
+### OBS: RENOMEAR ESTE ARQUIVO PARA EXTENSÃO .Rmd PARA RODAR NO R Studio!
+
 # Introdução 
 
 **R**
