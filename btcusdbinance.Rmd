@@ -1,3 +1,10 @@
+---
+title: "RAILS plot: btc x usd from binance - btcusdbinance"
+author: "Daniel Benicio"
+date: "01/06/2021"
+output: html_document
+---
+
 # Introdução 
 
 **R**
@@ -16,8 +23,55 @@ Este é o sistema de nivelamento com inteligência artificial baseado em R para 
 Caso os termos acima não façam sentido para você, é extremamente aconselhável não usar este código, mas entender os conceitos de economia e estatística mencionados anteriormente antes de qualquer coisa. Além disso, este código está sendo construído com licença Creative Commons `CC BY-NC`, disponível junto com o código neste documento [License](./LICENSE), ou seja, o software é fornecido _"AS IS"_, "como está", sem garantia de qualquer tipo, e disponível para usos comuns como "remixar", adaptar e desenvolver seu trabalho não comercialmente e, seus derivados também devem manter os créditos das respectivas porções de códigos e não serem comerciais, mantendo junto ao software o arquivo da licença original. 
 
 
-# Ativos e fontes de dados atualmente suportados:
+# Funcionamento
 
-1. [BTC x USD, Binance](./btcusdbinance.Rmd) (em construção)
+1. O script em R será executado conforme uma rotina de agendamento
+2. Primeiramente ele busca os últimos dados do pregão do ativo para o dataframe btcusddata
+3. Então ele salva a base no csv de nome correlato.
+
+Para visão dos próximos passos a serem implementados, ver o ` To DO` ao final deste documento.
 
 
+Atenção para a libs necessárias de instalação comentadas no bloco a seguir.
+
+```{r}
+# instalando pacote binancer no colab!
+# install.packages("remotes")
+# remotes::install_github("daroczig/binancer")
+
+# instalando pacote readr, para operações com arquivos CSV
+# install.packages('readr')
+
+
+# carregando libs
+library(binancer)
+library(readr)
+
+
+
+# criando o frame que vai compor o lago btcusd
+btcusddata <- data.frame(binance_klines('BTCUSDT', interval = '1m'))
+
+# exibindo a estrutura do lago
+# str(btcusddata)
+
+write.csv(btcusddata, file="btcusddata.csv")
+
+```
+
+
+
+#### TO DO:
+
+0. OK get crypto data
+1. OK save dataframe to drive
+2. OK commit to github 
+3. plot candlestick
+4. auto feed the lake with constant concatenated data
+5. data wrangling of the lake
+6. apply candlestick short/long-term crossing analysis
+7. include other assets (eth, doge, fii, usd, acn)
+8. save news aggregation
+9. save social media sentimental analysis
+10. test models
+11. weigh other variables to impprove prediction (social media trends aggregator, news aggregator, sentimental analysis in social mediaetc)
