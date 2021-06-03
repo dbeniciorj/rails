@@ -34,7 +34,7 @@ Caso os termos acima não façam sentido para você, é extremamente aconselháv
 Para visão dos próximos passos a serem implementados, ver o ` To DO` ao final deste documento.
 
 
-Atenção para a libs necessárias de instalação comentadas no bloco a seguir.
+Atenção para a libs necessárias de instalação comentadas no bloco a seguir. E além de carregar as libs, o bloco abaixo também declara algumas variáveis importantes para execução da rotina.
 
 ```{r}
 # instalando pacote binancer no colab!
@@ -54,18 +54,40 @@ library(ggplot2)
 library(tidyquant)
 library(quantmod)
 
+# variáveis
 alpha_param <- TRUE
 title_param <- "BTC/USD - Binance"
+```
 
-# criando o frame que vai compor a base
-df <- data.frame(binance_klines('BTCUSDT', interval = '1h'))
+Atualizando a base com dados novos (últimos 2 minutos) concatenados à última base válida:
+
+```{r}
+starttime <- as.POSIXct(Sys.time()) - as.difftime(2, units="mins")
+starttime <- round(starttime,"mins")
+
+endtime <- as.POSIXct(Sys.time())
+endtime <- round(endtime,"mins")
 
 
-write.csv(df, file="btcusddata.csv")
+# criando o frame que vai ser adicionado a base
+df <- data.frame(binance_klines('BTCUSDT', interval = '1m',
+    start_time = round(as.POSIXct(Sys.time()) - as.difftime(2, units="mins"),"mins"),
+    end_time = round(as.POSIXct(Sys.time()),"mins")) )
+
+# carregando última base válida
+btcusdbinance <- read_delim(file = "btcusdbinance.csv",
+                         delim = ",", 
+                         escape_double = FALSE, 
+                         trim_ws = TRUE)
+
+df <- rbind(btcusdbinance, df)
+
+# Atualizando a base
+write.csv(df, file="btcusdbinance.csv", row.names=FALSE)
 
 
 # exibindo a estrutura da base
-str(df)
+# str(df)
   
 df$Date <- df$close_time
 df$Close <- df$close 
@@ -122,6 +144,10 @@ df$change <- ifelse(df$close > df$open, "up", ifelse(df$close < df$open, "down",
 2. ~~commit to github~~
 3. ~~plot candlesticks~~
 4. auto feed the lake with constant concatenated data
+    * ~~concatenate files~~
+    * ~~pull small range of time from new trades~~
+        * bug: time range inconsistence in close. observed in 1 minute interval.
+    * automate
 5. data wrangling of the lake
 6. apply candlestick short/long-term crossing analysis
 7. include other assets (eth, doge, fii, usd, acn)
