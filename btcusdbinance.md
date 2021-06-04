@@ -28,8 +28,10 @@ Caso os termos acima não façam sentido para você, é extremamente aconselháv
 # Funcionamento
 
 1. O script em R será executado conforme uma rotina de agendamento
-2. Primeiramente ele busca os últimos dados do pregão do ativo para o dataframe btcusddata
-3. Então ele salva a base no csv de nome correlato.
+2. Primeiramente ele busca os últimos dados do pregão do ativo para o dataframe df
+3. Em seguida ele concatena as bases btcusdbinance (carregada de btcusdbinance.csv) e df na base df 
+3. Então ele salva a base em btcusdbinance.csv
+... CONTINUAR DESCRIÇÃO ...
 
 Para visão dos próximos passos a serem implementados, ver o ` To DO` ao final deste documento.
 
@@ -59,20 +61,20 @@ alpha_param <- TRUE
 title_param <- "BTC/USD - Binance"
 ```
 
-Atualizando a base com dados novos (últimos 2 minutos) concatenados à última base válida:
+Atualizando a base com dados novos (últimos 10 a 5 minutos atrás) concatenados à última base válida:
 
 ```{r}
-starttime <- as.POSIXct(Sys.time()) - as.difftime(2, units="mins")
-starttime <- round(starttime,"mins")
-
-endtime <- as.POSIXct(Sys.time())
-endtime <- round(endtime,"mins")
 
 
 # criando o frame que vai ser adicionado a base
-df <- data.frame(binance_klines('BTCUSDT', interval = '1m',
-    start_time = round(as.POSIXct(Sys.time()) - as.difftime(2, units="mins"),"mins"),
-    end_time = round(as.POSIXct(Sys.time()),"mins")) )
+df <- data.frame(binance_klines('BTCUSDT', interval = '5m',
+                                
+    start_time = round(as.POSIXct(Sys.time()) - 
+        as.difftime(10, units="mins"),"mins"),
+    
+    end_time = round(as.POSIXct(Sys.time()) - 
+        as.difftime(5, units="mins"),"mins")) )
+
 
 # carregando última base válida
 btcusdbinance <- read_delim(file = "btcusdbinance.csv",
@@ -80,6 +82,7 @@ btcusdbinance <- read_delim(file = "btcusdbinance.csv",
                          escape_double = FALSE, 
                          trim_ws = TRUE)
 
+# concatenando as duas bases
 df <- rbind(btcusdbinance, df)
 
 # Atualizando a base
@@ -146,7 +149,7 @@ df$change <- ifelse(df$close > df$open, "up", ifelse(df$close < df$open, "down",
 4. auto feed the lake with constant concatenated data
     * ~~concatenate files~~
     * ~~pull small range of time from new trades~~
-        * bug: time range inconsistence in close. observed in 1 minute interval.
+        * ~~bug: time range inconsistence in close. observed in 1 minute interval.~~
     * automate
 5. data wrangling of the lake
 6. apply candlestick short/long-term crossing analysis
